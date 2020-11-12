@@ -106,6 +106,21 @@ function yall (userOptions) {
       element.setAttribute("poster", element.getAttribute("data-poster"));
     }
   };
+  
+  /**
+   * Add a class after image loaded successfully.
+   * This helps to add and remove a blur effect.
+   * @param image element
+   */
+  const addLoadedClass = function (element) {
+    if(element.getAttribute("src") !== null) {
+      var img = new Image();
+      img.src = element.getAttribute("src");
+      img.onload = function () {
+        element.classList.add(options.lazyLoadedClass);
+      };
+    }
+  };
 
   // When intersection observer is unavailable, this function is bound to scroll
   // (and other) event handlers to load images the "old" way.
@@ -128,6 +143,7 @@ function yall (userOptions) {
 
             lazyElement.classList.remove(options.lazyClass);
             lazyElements = lazyElements.filter(element => element !== lazyElement);
+            addLoadedClass(lazyElement);
           }
         });
 
@@ -157,6 +173,7 @@ function yall (userOptions) {
           element.classList.remove(options.lazyClass);
           observer.unobserve(element);
           lazyElements = lazyElements.filter(lazyElement => lazyElement !== element);
+          addLoadedClass(element);
         }
       });
     }, {
